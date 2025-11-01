@@ -1,11 +1,11 @@
-const axios = require('axios');
+ 'X-API-KEY': this.accessToken,const axios = require('axios');
 
 class UnipileClient {
   constructor() {
     this.baseURL = process.env.UNIPILE_DSN;
     this.accessToken = process.env.UNIPILE_ACCESS_TOKEN;
     this.headers = {
-       'X-API-KEY': this.accessToken,
+      'Authorization': `Bearer ${this.accessToken}`,
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     };
@@ -25,44 +25,24 @@ class UnipileClient {
   }
 
   // Search for companies
- async searchCompanies(searchUrl, accountId = this.defaultAccountId) {
-  try {
-    console.log('=== SEARCH COMPANIES ===');
-    console.log('Account ID:', accountId);
-    console.log('Search URL:', searchUrl);
-    
-    const response = await axios.post(
-      `${this.baseURL}/api/v1/linkedin/search?account_id=${accountId}`,  // ← Added query param
-      {
-        url: searchUrl,
-        type: 'COMPANY'
-      },
-      { headers: this.headers }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error searching companies:', error.response?.data || error.message);
-    throw error;
+  async searchCompanies(accountId, searchUrl) {
+    try {
+      const response = await axios.post(
+        `${this.baseURL}/api/v1/linkedin/search`,
+        {
+          account_id: accountId,
+          url: searchUrl,
+          type: 'COMPANY'
+        },
+        { headers: this.headers }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error searching companies:', error.response?.data || error.message);
+      throw error;
+    }
   }
-}
-// Get company posts
-async getCompanyPosts(organizationId, accountId = this.defaultAccountId, limit = 10) {
-  try {
-    console.log('=== GET COMPANY POSTS ===');
-    console.log('Organization ID:', organizationId);
-    console.log('Account ID:', accountId);
-    console.log('Limit:', limit);
-    
-    const response = await axios.get(
-      `${this.baseURL}/api/v1/organizations/${organizationId}/feed?account_id=${accountId}&limit=${limit}`,
-      { headers: this.headers }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error getting company posts:', error.response?.data || error.message);
-    throw error;
-  }
-}
+
   // Search for people/candidates
   async searchPeople(accountId, searchUrl) {
     try {
@@ -118,3 +98,5 @@ async getCompanyPosts(organizationId, accountId = this.defaultAccountId, limit =
 }
 
 module.exports = new UnipileClient();
+x
+

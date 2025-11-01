@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');  // ← Comment this out
 const linkedinRoutes = require('./routes/linkedin');
 
 const app = express();
@@ -10,10 +10,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection - COMMENTED OUT
+/*
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
+*/
 
 // Routes
 app.use('/api/linkedin', linkedinRoutes);
